@@ -6,6 +6,7 @@ import Home from "./components/Home";
 import Transfer from "./components/Transfer";
 import Customers from "./components/Customers";
 import Footer from "./components/Footer";
+import AboutUs from "./components/AboutUs";
 
 const App = () => {
   return (
@@ -21,6 +22,9 @@ const App = () => {
           </Route>
           <Route path='/customer/:id'>
             <Transfer />
+          </Route>
+          <Route path='/about'>
+            <AboutUs />
           </Route>
         </Switch>
         <Footer />
