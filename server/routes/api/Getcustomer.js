@@ -14,6 +14,20 @@ app.get("/:id", (req, res) => {
     .catch((err) => console.log(err));
 });
 
+app.post("/", async (req, res) => {
+  var { Transfer, Balance, Amount } = req.body;
+  let CustomerTo = { name: `${Transfer}` };
+  let CustomerFrom = { name: `${Balance}` };
+  console.log(CustomerTo);
+  Customer.find({ name: CustomerTo }, (err, docs) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(docs);
+    }
+  });
+});
+
 // app.patch("/:id", (req, res) => {
 //   Customer.find({ id: `${req.params.id}` }).then(data);
 // });
