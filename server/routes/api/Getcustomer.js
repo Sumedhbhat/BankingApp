@@ -15,17 +15,40 @@ app.get("/:id", (req, res) => {
 });
 
 app.post("/", async (req, res) => {
-  var { Transfer, Balance, Amount } = req.body;
-  let CustomerTo = { name: `${Transfer}` };
-  let CustomerFrom = { name: `${Balance}` };
-  console.log(CustomerTo);
-  Customer.find({ name: CustomerTo }, (err, docs) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(docs);
-    }
-  });
+  const { Transfer, Balance } = req.body;
+  var { Amount } = req.body;
+  Amount = parseInt(Amount);
+  console.log(Transfer, Balance);
+  const CustomerFrom = await Customer.findById(Balance);
+  const CustomerTo = await Customer.findById(Transfer);
+  console.log(CustomerFrom, CustomerTo);
+  const newTo = (await CustomerTo.balance) + Amount;
+  const newFrom = (await CustomerFrom.balance) - Amount;
+  console.log(newFrom, newTo);
+  const docsTo = await Customer.findByIdAndUpdate(
+    Transfer,
+    { balance: newTo },
+    { new: true }
+  );
+  const docsFrom = await Customer.findByIdAndUpdate(
+    Balance,
+    { balance: newFrom },
+    { new: true }
+  );
+  console.log(docsFrom, docsTo);
+  res.send({ docsTo, docsFrom });
+  // var DocsFrom = await Customer.findOneAndUpdate(
+  //   CustomerFrom,
+  //   { balance: `${newFrom}` },
+  //   { new: true }
+  // );
+  // var DocsTo = await Customer.findOneAndUpdate(
+  //   CustomerTo,
+  //   { balance: `${newTo}` },
+  //   { new: true }
+  // );
+  // console.log(DocsTo);
+  // console.log(DocsFrom);
 });
 
 // app.patch("/:id", (req, res) => {

@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-
+import { Redirect } from "react-router-dom";
 const Transfer = () => {
   var newUser = {};
+  var sentName = "";
   let { id } = useParams();
   const [Customer, setCustomer] = useState([]);
   const [Users, setUsers] = useState([]);
-  const [Transfer, setTransfer] = useState({});
+  const [Transfer, setTransfer] = useState("");
   const [Amount, setAmount] = useState(0);
   const [Balance, setBalance] = useState({});
 
@@ -26,16 +27,22 @@ const Transfer = () => {
   );
 
   const Submit = async () => {
-    if (Amount <= Customer[0].balance) {
-      let data = { Transfer, Amount, Balance };
-      axios
-        .post("/api/customers", data)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => console.log(err));
+    if (Amount !== 0 && Transfer !== "") {
+      if (Amount <= Customer[0].balance) {
+        let data = { Transfer, Amount, Balance };
+        axios
+          .post("/api/customers", data)
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => console.log(err));
+        alert(`You have successfully transferred ${Amount} from your account`);
+        window.location.href = "/";
+      } else {
+        alert("Request Amount exceeds your account balance");
+      }
     } else {
-      alert("Please Enter a valid amount");
+      alert("Please fill all the required fields");
     }
   };
 
@@ -47,6 +54,7 @@ const Transfer = () => {
         return Customer[0]._id;
       });
       setTransfer(() => {
+        sentName = value;
         newUser = Users.filter((user) => user.name === value);
         return newUser[0]._id;
       });
@@ -56,10 +64,6 @@ const Transfer = () => {
       });
     }
   };
-  useEffect(() => {
-    console.log(typeof Amount);
-    console.log(Transfer, Amount, Balance);
-  }, [Transfer, Amount, Balance]);
 
   return (
     <div className='body bg-gradient-to-tr from-blue-600 via-blue-800 to-indigo-600 flex justify-center items-center'>
